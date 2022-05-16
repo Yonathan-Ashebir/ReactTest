@@ -1,72 +1,53 @@
 import React from 'react';
-import { Provider,connect } from 'react-redux';
+import { Provider, ReactReduxContext } from 'react-redux';
 import './App.css';
-import { createStore} from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import Home from './lib/js/Home';
+import About from './lib/js/About';
 
 
-class Home extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { background: "grey" };
-  }
+class App extends React.Component {
   render() {
-    console.log(this.props);
+    const a = ["Yonathan", "Adom", "Joe", "Carl"]
+    main();
+
     return (
-      <div style={{ backgroundColor: this.state.background }}>
-        <h1 style={{ backgroundColor: this.state.background }}>Home</h1>
-        {(this.state.background == "grey") ? <MyButton /> : null}
-        <RecolorButton parent={this} />
+      <div>
+
+        <Provider store={getStore()}>
+          <Home cookie={this.props.cookie} />
+        </Provider>   <Provider store={getStore()}>
+          <About cookie={this.props.cookie} />
+        </Provider>
       </div>
     );
   }
 }
-class About extends React.Component {
-  render() { return <h1>About</h1>; }
-}
-class MyButton extends React.Component {
-  render() {
-    return <button style={{
-      borderRadius: "5px", border: "none", color: "gold", backgroundColor: "black"
-    }}
-      onClick={(e) => { e.target.style.color = "red" }}> Click ME!</button >
-  }
-}
-class RecolorButton extends React.Component {
-  render() {
-    const recolor = () => { this.props.parent.setState({ background: 'red' }) }
-    return (
-      <button style={{
-        borderRadius: "5px", border: "none", color: "gold", backgroundColor: "black"
-      }}
-        onClick={recolor.bind(this)}>Recolor</button >
-    )
-  }
-}
-
-
-function App() {
-  const a = ["Yonathan", "Adom", "Joe", "Carl"]
-
-  return (
-    <Provider store={getStore()}>
-
-      <h2>{this.props.cookie}</h2>
-    </Provider>
-  );
-}
 function getStore() {
+  let store = createStore(combineReducers(
+    {
+      test: (store, action) => {
+        let payload = (action.payload) ? action.payload : {};
+        console.log("From Test Reducer:");
+        console.log(store); console.log(action)
+        return { ...store, count: (store != null && store.count != null) ? store.count + 1 : 0 }
+      }, deploy: (store, action) => {
+        let payload = (action.payload) ? action.payload : {};
+        console.log("From  Deploy Reducer:");
+        console.log(store); console.log(action)
+        return { ...store, count: (store != null && store.count != null) ? store.count + 1 : 0 }
+      }
+    }),
+    { test: { cookie: "yoni-cookie", count: 0 } },
+    applyMiddleware((store) => (next) => (action) => { console.log("Form Middle Ware:"); console.log(store.getState()); console.log(next); console.log(action); next(action); })
+  )
 
-  let store = createStore((state, action) => {
-    let payload = (action.payload) ? action.payload : {};
-    console.log(state); console.log(action);
-    return { ...state, ...payload }
-  },
-    { cookie: "yoni-cookie" })
   return store;
 }
-function shareAll(state) {
-  return { ...state }
-}
-connect(shareAll)(App);
 
+function main() {
+  let context = ReactReduxContext;
+  console.log(context)
+}
 export default App;
+
