@@ -2,22 +2,28 @@ import React from 'react';
 import { Provider, ReactReduxContext } from 'react-redux';
 import './App.css';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import Home from './lib/js/Home';
-import About from './lib/js/About';
+import ReduxComponent from './lib/js/Home';
+
 
 
 class App extends React.Component {
   render() {
     const a = ["Yonathan", "Adom", "Joe", "Carl"]
+    const Cxt = React.createContext("default value")
     main();
 
     return (
       <div>
-
+        <Cxt.Provider value="value givem">
+          <Cxt.Consumer>
+            {(val) => <div>{val}</div>}
+          </Cxt.Consumer>
+        </Cxt.Provider>
         <Provider store={getStore()}>
-          <Home cookie={this.props.cookie} />
-        </Provider>   <Provider store={getStore()}>
-          <About cookie={this.props.cookie} />
+          <ReduxComponent cookie={this.props.cookie} />
+        </Provider>
+        <Provider store={getStore()}>
+          <ReduxComponent cookie={this.props.cookie} />
         </Provider>
       </div>
     );
@@ -26,20 +32,25 @@ class App extends React.Component {
 function getStore() {
   let store = createStore(combineReducers(
     {
-      test: (store, action) => {
+      test: (state, action) => {
         let payload = (action.payload) ? action.payload : {};
         console.log("From Test Reducer:");
-        console.log(store); console.log(action)
-        return { ...store, count: (store != null && store.count != null) ? store.count + 1 : 0 }
-      }, deploy: (store, action) => {
+        console.log(state); console.log(action)
+        return { ...state, count: (state != null && state.count != null) ? state.count + 1 : 0 }
+      }, deploy: (state, action) => {
         let payload = (action.payload) ? action.payload : {};
         console.log("From  Deploy Reducer:");
-        console.log(store); console.log(action)
-        return { ...store, count: (store != null && store.count != null) ? store.count + 1 : 0 }
+        console.log(state); console.log(action)
+        return null
       }
-    }),
-    { test: { cookie: "yoni-cookie", count: 0 } },
-    applyMiddleware((store) => (next) => (action) => { console.log("Form Middle Ware:"); console.log(store.getState()); console.log(next); console.log(action); next(action); })
+    }
+  ),
+    { cookie: "yoni-cookie", count: 0 },
+    applyMiddleware((store) => (next) => (action) => {
+      console.log("Form Middle Ware:"); console.log(store.getState()); console.log(next); console.log(action);
+      store.getState().test.note = "untracked change check"
+      next(action);
+    })
   )
 
   return store;
