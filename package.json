@@ -16,6 +16,7 @@
     "react-styled-components": "^0.1.11",
     "react-transition-group": "^4.4.2",
     "redux": "^4.2.0",
+    "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4",
     "whatwg-fetch": "^3.6.2"
   },

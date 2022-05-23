@@ -37,3 +37,17 @@
     transform: rotate(360deg);
   }
 }
+.fade-enter{
+  opacity: 0.1;
+}
+.fade-leave{
+ opacity:0.1;
+}
+.fade-enter-active{
+  color:blue;
+  opacity: 0.1;
+}
+.fade-leave-active{
+  color:yellow;
+  opacity: 0.1;
+}
