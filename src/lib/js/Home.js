@@ -3,8 +3,16 @@ import { Provider, connect, useStore, useSelector, useDispatch } from 'react-red
 import { createStore } from 'redux';
 
 class ReduxComponent extends React.Component {
+    static count =0;
+    constructor(props){
+        super(props);
+       ReduxComponent.count++;
+       console.log("Redux Component created: "+ ReduxComponent.count);
+       this.obj=0;
+    }
     render() {
-
+        this.obj++;
+        console.log("Obj: "+this.obj)
         return (<div>
             <h1>Home content here:</h1>
             <h2>{this.props.test.count}</h2>

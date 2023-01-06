@@ -10,7 +10,7 @@ import { CSSTransition, Transition, TransitionGroup } from 'react-transition-gro
 
 class App extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = { isIn: false };
   }
   render() {
@@ -20,14 +20,15 @@ class App extends React.Component {
     const Title = styled.h1`background-color:red;width:100%`
     const toggleView = () => {
       this.state.isIn = !this.state.isIn;
-      this.myBtn.current.style.background = (this.state.isIn) ? "blue" : "red";
+      this.fadeElement.current.style.background = (this.state.isIn) ? "blue" : "red";
       this.setState(this.state);
     }
-    this.myBtn = React.createRef()
-
+    this.fadeElement = React.createRef()
+    console.log("app rerendered")
     return (
+
       <div>
-        <Cxt.Provider value="value givem">
+        <Cxt.Provider value="value given">
           <Cxt.Consumer>
             {(val) => <div>{val}</div>}
           </Cxt.Consumer>
@@ -40,7 +41,7 @@ class App extends React.Component {
         </Provider>
         <hr></hr>
         <Title>Styled Elements from here...</Title>
-        <Fade in={this.state.isIn} ref={this.myBtn} />
+        <Fade in={this.state.isIn} ref={this.fadeElement} />
         <button onClick={toggleView.bind(this)}>Change State</button>
 
       </div>
@@ -60,7 +61,7 @@ const transitionStyles = {
   entered: { opacity: 1 },
 };
 
-const Fade = React.forwardRef(({ in: inProp },ref) => (
+const Fade = React.forwardRef(({ in: inProp }, ref) => (
   <Transition timeout={duration} in={inProp}>
     {(state) => {
       return <div ref={ref}>
